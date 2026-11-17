@@ -20,9 +20,17 @@ enum class ClusterProjectionProtocol { ANDROID_AUTO, CARPLAY }
  * negotiated offer or active navigation. Callers must separately enforce those live boundaries.
  */
 object ClusterOutputPolicy {
+    /**
+     * Known GM AAOS head-unit products. Policy membership only: it does not select a geometry profile
+     * or calibrated default, which stay tied to [ClusterDisplayProfiles.AEGEAN_ORANGE_239].
+     * - `aegean_orange`: Chevrolet Blazer EV (qualified profile).
+     * - `burmese_orange`: Chevrolet Equinox EV, where the same native-guidance/video exclusion was
+     *   confirmed on the vehicle.
+     */
+    val GM_PRODUCTS: Set<String> = setOf(ClusterDisplayProfiles.AEGEAN_ORANGE_239.vehicle.product, "burmese_orange")
+
     /** Known GM product policy, independent of observer readiness or stored user intent. */
-    fun isGmVehicle(product: String? = android.os.Build.PRODUCT): Boolean =
-        product == ClusterDisplayProfiles.AEGEAN_ORANGE_239.vehicle.product
+    fun isGmVehicle(product: String? = android.os.Build.PRODUCT): Boolean = product in GM_PRODUCTS
     fun shouldOfferMapVideo(selection: ClusterOutputSelection, protocol: ClusterProjectionProtocol): Boolean =
         selection.mode == ClusterDisplayMode.MAP_VIDEO
 
